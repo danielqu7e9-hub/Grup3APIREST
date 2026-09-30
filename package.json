@@ -4,8 +4,8 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "start": "bun run server.ts",
-    "dev": "bun --watch run server.ts"
+    "start": "bun --env-file=secrets.env run server.ts",
+    "dev": "bun --env-file=secrets.env --watch run server.ts"
   },
   "devDependencies": {
     "@types/bun": "latest",
