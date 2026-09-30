@@ -1,5 +1,6 @@
 import express, { type Request, type Response, type NextFunction } from "express"
 import tasklists from "./routes/tasklists.routes";
+import { sql } from "bun"; // TEMPORAL JUNTO LO DE ABAJO, SI SE ELIMINA ELIMINAR LOS DOS
 
 const app = express();
 const PORT = 15955;
@@ -19,6 +20,12 @@ app.get('/status', (req, res) => {
 
 // Router the tasklists
 app.use('/tasklists', tasklists);
+
+// TEMPORAL PARA TESTS -- Dani
+app.get('/users', async (req, res) => {
+    const users = await sql`SELECT * FROM "user"`;
+    res.status(200).json(users);
+});
 
 // Middleware of errors
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
