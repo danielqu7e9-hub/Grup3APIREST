@@ -1,13 +1,12 @@
 import express, { type Request, type Response, type NextFunction } from "express"
 import tasklists from "./routes/tasklists.routes";
-import { sql } from "bun"; // TEMPORAL JUNTO LO DE ABAJO, SI SE ELIMINA ELIMINAR LOS DOS
 
 const app = express();
 const PORT = 15955;
 
 app.use(express.json());
 
-// Log the requests
+// MIDDLEWARE Log the requests 
 app.use((req, res, next) => {
     console.log(req.method, req.url);
     next();
@@ -18,16 +17,10 @@ app.get('/status', (req, res) => {
     res.json({status: "alive" });
 });
 
-// Router the tasklists
+// MIDDLEWARE Router the tasklists
 app.use('/tasklists', tasklists);
 
-// TEMPORAL PARA TESTS -- Dani
-app.get('/users', async (req, res) => {
-    const users = await sql`SELECT * FROM "user"`;
-    res.status(200).json(users);
-});
-
-// Middleware of errors
+// MIDDLEWARE Log errors
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     console.error(err.message);
     res.status(500).json({ message: "Error interno" });
