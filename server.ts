@@ -1,5 +1,6 @@
 import express, { type Request, type Response, type NextFunction } from "express"
 import tasklists from "./routes/tasklists.routes";
+import task from "./routes/task.routes";
 
 const app = express();
 const PORT = 15955;
@@ -17,8 +18,11 @@ app.get('/status', (req, res) => {
     res.json({status: "alive" });
 });
 
-// MIDDLEWARE Router the tasklists
+// Router the tasklists
 app.use('/tasklists', tasklists);
+
+// Router task
+app.use('/task', task);
 
 // MIDDLEWARE Log errors
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

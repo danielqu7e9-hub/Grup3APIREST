@@ -1,15 +1,21 @@
 import type { Request, Response } from "express";
-import * as tasklistsServices from "../services/tasklists.services";
-import { parseId, parseListCreateBody, parseListUpdateBody } from "../utils/parse";
+import * as taskServices from "../services/task.services";
+import { parseId, parseTaskUpdateBody, parseTaskCreateBody } from "../utils/parse";
 
-// GET /tasklists
+// GET /task
 export async function getAll(req: Request, res: Response) {
     try {
-        let tasklists = await tasklistsServices.getAll();
+        // Look if ID is Integer
+        const listId = parseId(req.query.listId);
+        if ( listId === null ) {
+            return res.status(400).json({ error: "Wrong ID type" });
+        }
 
-        if (tasklists.error) return res.status(400).json(tasklists.error);
+        let tasks = await taskServices.getAll(listId);
 
-        res.status(200).json(tasklists);
+        if (tasks.error) return res.status(400).json(tasks.error);
+
+        res.status(200).json(tasks);
 
     } catch (err) {
         console.log(`${err}`);
@@ -17,7 +23,7 @@ export async function getAll(req: Request, res: Response) {
     }
 }
 
-// GET /tasklists by id
+// GET /task by id
 export async function getById(req: Request, res: Response) {
     try {
         // Look if ID is Integer
@@ -27,13 +33,13 @@ export async function getById(req: Request, res: Response) {
         }
 
         // Look if it exists
-        const tasklist = await tasklistsServices.getById(id);
-        if (!tasklist) {
-            return res.status(404).json({ error: "Tasklist with this ID doesn't exist" });
+        const task = await taskServices.getById(id);
+        if (!task) {
+            return res.status(404).json({ error: "Task with this ID doesn't exist" });
         }
 
         // Return
-        res.status(200).json(tasklist);
+        res.status(200).json(task);
 
     } catch (err) {
         console.log(`${err}`);
@@ -41,20 +47,20 @@ export async function getById(req: Request, res: Response) {
     }
 }
 
-// POST /tasklist
+// POST /task
 export async function create(req: Request, res: Response) {
     try {
         // Look if body is valid
-        const data = parseListCreateBody(req.body);
+        const data = parseTaskCreateBody(req.body);
         if ( data === null ) {
             return res.status(400).json({ error: "Wrong body type" });
         }
 
         // Create it
-        const tasklist = await tasklistsServices.create(data);
+        const task = await taskServices.create(data);
 
         // Return
-        res.status(201).json({ message: "Created", list: tasklist });
+        res.status(201).json({ message: "Created", task: task });
 
     } catch (err) {
         console.log(`${err}`);
@@ -62,7 +68,7 @@ export async function create(req: Request, res: Response) {
     }
 }
 
-// PUT /tasklists/:id
+// PUT /task/:id
 export async function update(req: Request, res: Response) {
     try {
         // Look if ID is Integer
@@ -72,19 +78,19 @@ export async function update(req: Request, res: Response) {
         }
 
         // Look if body is valid
-        const data = parseListUpdateBody(req.body);
+        const data = parseTaskUpdateBody(req.body);
         if ( data === null ) {
             return res.status(400).json({ error: "Wrong body type" });
         }
 
         // Look if it exists
-        const tasklist = await tasklistsServices.update(id, data);
-        if (!tasklist) {
-            return res.status(404).json({ error: "Tasklist with this ID doesn't exist" });
+        const task = await taskServices.update(id, data);
+        if (!task) {
+            return res.status(404).json({ error: "Task with this ID doesn't exist" });
         }
 
         // Return
-        res.status(200).json(tasklist);
+        res.status(200).json(task);
 
     } catch (err) {
         console.log(err);
@@ -92,7 +98,7 @@ export async function update(req: Request, res: Response) {
     }
 }
 
-// DELETE /tasklists/:id
+// DELETE /task/:id
 export async function remove(req: Request, res: Response) {
     try {
         // Look if ID is Integer
@@ -102,13 +108,13 @@ export async function remove(req: Request, res: Response) {
         }
 
         // Look if it exists
-        const tasklist = await tasklistsServices.remove(id);
-        if (!tasklist) {
-            return res.status(404).json({ error: "Tasklist with this ID doesn't exist" });
+        const task = await taskServices.remove(id);
+        if (!task) {
+            return res.status(404).json({ error: "Task with this ID doesn't exist" });
         }
 
         // Return
-        res.status(200).json(tasklist);
+        res.status(200).json(task);
 
     } catch (err) {
         console.log(err);
