@@ -10,7 +10,7 @@ import { sql } from "bun";
  * @returns Promise<Any>
  */
 export async function getAll(listId: number) {
-    return await sql`SELECT * FROM todo WHERE "listId" = ${listId}`;
+    return await sql`SELECT * FROM task WHERE "listId" = ${listId}`;
 }
 
 /**
@@ -23,7 +23,7 @@ export async function getAll(listId: number) {
  * @returns Promise<Any>
  */
 export async function getById(id: number) {
-    const [task] = await sql`SELECT * FROM todo WHERE id = ${id}`;
+    const [task] = await sql`SELECT * FROM task WHERE id = ${id}`;
     return task;
 }
 
@@ -37,7 +37,7 @@ export async function getById(id: number) {
  * @returns Promise<Any>
  */
 export async function create(data: { title: string; description?: string | null; isDone: boolean; dueTo: number | null; listId: number }) {
-    const [task] = await sql`INSERT INTO todo (title, description, "isDone", "dueTo", "listId") VALUES (${data.title}, ${data.description ?? null}, ${data.isDone}, ${data.dueTo !== null ? new Date(data.dueTo) : null}, ${data.listId}) RETURNING *`;
+    const [task] = await sql`INSERT INTO task (title, description, "isDone", "dueTo", "listId") VALUES (${data.title}, ${data.description ?? null}, ${data.isDone}, ${data.dueTo !== null ? new Date(data.dueTo) : null}, ${data.listId}) RETURNING *`;
     return task;
 }
 
@@ -52,7 +52,7 @@ export async function create(data: { title: string; description?: string | null;
  * @returns Promise<Any>
  */
 export async function update(id: number, data: { title: string; description: string | null; isDone: boolean; dueTo: number | null }) {
-    const [task] = await sql`UPDATE todo SET title = ${data.title}, description = ${data.description ?? null}, "isDone" = ${data.isDone}, "dueTo" = ${data.dueTo !== null ? new Date(data.dueTo) : null} WHERE id = ${id} RETURNING *`;
+    const [task] = await sql`UPDATE task SET title = ${data.title}, description = ${data.description ?? null}, "isDone" = ${data.isDone}, "dueTo" = ${data.dueTo !== null ? new Date(data.dueTo) : null} WHERE id = ${id} RETURNING *`;
     return task;
 }
 
@@ -66,6 +66,6 @@ export async function update(id: number, data: { title: string; description: str
  * @returns Promise<Any>
  */
 export async function remove(id: number) {
-    const [task] = await sql`DELETE FROM todo WHERE id = ${id} RETURNING *`;
+    const [task] = await sql`DELETE FROM task WHERE id = ${id} RETURNING *`;
     return task;
 }
