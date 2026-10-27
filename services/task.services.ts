@@ -37,7 +37,7 @@ export async function getById(id: number) {
  * @returns Promise<Any>
  */
 export async function create(data: { title: string; description?: string | null; isDone: boolean; dueTo: number | null; listId: number }) {
-    const [task] = await sql`INSERT INTO task (title, description, "isDone", "dueTo", "listId") VALUES (${data.title}, ${data.description ?? null}, ${data.isDone}, ${data.dueTo !== null ? new Date(data.dueTo) : null}, ${data.listId}) RETURNING *`;
+    const [task] = await sql`INSERT INTO task (title, description, "isDone", "dueTo", "listId") VALUES (${data.title}, ${data.description ?? null}, ${data.isDone}, ${data.dueTo ?? null}, ${data.listId}) RETURNING *`;
     return task;
 }
 
@@ -52,7 +52,7 @@ export async function create(data: { title: string; description?: string | null;
  * @returns Promise<Any>
  */
 export async function update(id: number, data: { title: string; description: string | null; isDone: boolean; dueTo: number | null }) {
-    const [task] = await sql`UPDATE task SET title = ${data.title}, description = ${data.description ?? null}, "isDone" = ${data.isDone}, "dueTo" = ${data.dueTo !== null ? new Date(data.dueTo) : null} WHERE id = ${id} RETURNING *`;
+    const [task] = await sql`UPDATE task SET title = ${data.title}, description = ${data.description ?? null}, "isDone" = ${data.isDone}, "dueTo" = ${data.dueTo ?? null} WHERE id = ${id} RETURNING *`;
     return task;
 }
 

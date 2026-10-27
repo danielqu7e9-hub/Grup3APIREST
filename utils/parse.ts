@@ -106,7 +106,7 @@ export function parseTaskCreateBody(value: unknown): { title: string; descriptio
     // Validate dueTo (optional timestamp / non negative finite number)
     let parsedDueTo: number | null = null;
     if (typeof dueTo === "number") {
-        if (!Number.isFinite(dueTo) || dueTo < 0) return null;
+        if (!Number.isSafeInteger(dueTo) || dueTo < 0) return null;
         parsedDueTo = dueTo;
     } else if (dueTo !== undefined && dueTo !== null) {
         return null;
@@ -184,7 +184,7 @@ export function parseTaskUpdateBody(value: unknown): { title: string; descriptio
     // Validate dueTo (optional timestamp / positive finite number)
     let parsedDueTo: number | null = null;
     if (typeof dueTo === "number") {
-        if (!Number.isFinite(dueTo) || dueTo < 0) return null;
+        if (!Number.isSafeInteger(dueTo) || dueTo < 0) return null;
         parsedDueTo = dueTo;
     } else if (dueTo !== undefined && dueTo !== null) {
         return null;

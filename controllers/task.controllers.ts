@@ -60,11 +60,11 @@ export async function create(req: Request, res: Response) {
         const task = await taskServices.create(data);
 
         // Return
-        res.status(201).json({ message: "Created", task: task });
+        return res.status(201).json({ message: "Created", task });
 
     } catch (err) {
-        console.log(`${err}`);
-        res.status(500).json({ error: "Database error" })
+        console.log(err);
+        return res.status(500).json({ error: "Database error" })
     }
 }
 
@@ -90,11 +90,11 @@ export async function update(req: Request, res: Response) {
         }
 
         // Return
-        res.status(200).json(task);
+        return res.status(200).json(task);
 
     } catch (err) {
         console.log(err);
-        res.status(500).json({ error: "Database error" })
+        return res.status(500).json({ error: "Database error" })
     }
 }
 
