@@ -54,7 +54,7 @@ export async function create(req: Request, res: Response) {
         const tasklist = await tasklistsServices.create(data);
 
         // Return
-        res.status(201).json({ message: "Created", list: tasklist });
+        res.status(201).json(tasklist);
 
     } catch (err) {
         console.log(`${err}`);
