@@ -60,7 +60,7 @@ export async function create(req: Request, res: Response) {
         const task = await taskServices.create(data);
 
         // Return
-        return res.status(201).json({ message: "Created", task });
+        return res.status(201).json(task);
 
     } catch (err) {
         console.log(err);
