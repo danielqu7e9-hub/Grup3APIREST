@@ -5,7 +5,9 @@
   "private": true,
   "scripts": {
     "start": "bun --env-file=secrets.env run server.ts",
-    "dev": "bun --env-file=secrets.env --watch run server.ts"
+    "dev": "bun --env-file=secrets.env --watch run server.ts",
+    "seed": "bun --env-file=secrets.env run scripts/seed.ts",
+    "seed:clean": "bun --env-file=secrets.env run scripts/seed.ts --clean"
   },
   "devDependencies": {
     "@types/bun": "latest",
