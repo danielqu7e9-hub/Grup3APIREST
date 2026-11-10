@@ -39,6 +39,17 @@ function parsePositiveId(value: unknown): number | null {
 }
 
 /**
+ * parsePriority()
+ * This function validates if the value is an Integer between 1 and 5, otherwise it returns a null.
+ *
+ * @param value Unknown
+ * @returns Number or Null
+ */
+function parsePriority(value: unknown): number | null {
+    return typeof value === "number" && Number.isInteger(value) && value >= 1 && value <= 5 ? value : null;
+}
+
+/**
  * parseListCreateBody()
  * This function validates the request body of a tasklist creation, if the body is not valid it returns a null.
  * 
@@ -81,11 +92,11 @@ export function parseListCreateBody(value: unknown): { name: string; description
  * @param value Unknown
  * @returns Object or Null
  */
-export function parseTaskCreateBody(value: unknown): { title: string; description: string | null; isDone: boolean; dueTo: number | null; listId: number } | null {
+export function parseTaskCreateBody(value: unknown): { title: string; description: string | null; isDone: boolean; dueTo: number | null; listId: number; priority: number } | null {
     if (typeof value !== "object" || value === null) return null;
 
     const body = value as Record<string, unknown>;
-    const { title, description, isDone, dueTo, listId } = body;
+    const { title, description, isDone, dueTo, listId, priority } = body;
 
     if (typeof title !== "string") return null;
 
@@ -115,7 +126,14 @@ export function parseTaskCreateBody(value: unknown): { title: string; descriptio
     const parsedListId = parsePositiveId(listId);
     if (parsedListId === null) return null;
 
-    return { title: trimmedTitle, description: parsedDescription, isDone, dueTo: parsedDueTo, listId: parsedListId };
+    let parsedPriority = 1;
+    if (priority !== undefined && priority !== null) {
+        const p = parsePriority(priority);
+        if (p === null) return null;
+        parsedPriority = p;
+    }
+
+    return { title: trimmedTitle, description: parsedDescription, isDone, dueTo: parsedDueTo, listId: parsedListId, priority: parsedPriority };
 }
 
 /**
@@ -159,11 +177,11 @@ export function parseListUpdateBody(value: unknown): { name: string; description
  * @param value Unknown
  * @returns Object or Null
  */
-export function parseTaskUpdateBody(value: unknown): { title: string; description: string | null; isDone: boolean; dueTo: number | null } | null {
+export function parseTaskUpdateBody(value: unknown): { title: string; description: string | null; isDone: boolean; dueTo: number | null; priority: number } | null {
     if (typeof value !== "object" || value === null) return null;
 
     const body = value as Record<string, unknown>;
-    const { title, description, isDone, dueTo } = body;
+    const { title, description, isDone, dueTo, priority } = body;
 
     if (typeof title !== "string") return null;
 
@@ -190,5 +208,9 @@ export function parseTaskUpdateBody(value: unknown): { title: string; descriptio
         return null;
     }
 
-    return { title: trimmedTitle, description: parsedDescription, isDone, dueTo: parsedDueTo };
+    // Validate priority (required, 1-5)
+    const parsedPriority = parsePriority(priority);
+    if (parsedPriority === null) return null;
+
+    return { title: trimmedTitle, description: parsedDescription, isDone, dueTo: parsedDueTo, priority: parsedPriority };
 }

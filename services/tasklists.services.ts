@@ -21,7 +21,7 @@ export async function getAll() {
  * @param id Number
  * @returns Promise<Any>
  */
-export async function getById(id: Number) {
+export async function getById(id: number) {
   const [tasklist] = await sql`SELECT * FROM list WHERE id = ${id}`;
   return tasklist;
 }

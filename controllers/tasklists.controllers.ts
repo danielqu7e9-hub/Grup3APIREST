@@ -5,9 +5,7 @@ import { parseId, parseListCreateBody, parseListUpdateBody } from "../utils/pars
 // GET /tasklists
 export async function getAll(req: Request, res: Response) {
     try {
-        let tasklists = await tasklistsServices.getAll();
-
-        if (tasklists.error) return res.status(400).json(tasklists.error);
+        const tasklists = await tasklistsServices.getAll();
 
         res.status(200).json(tasklists);
 

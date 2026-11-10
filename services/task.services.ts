@@ -41,8 +41,8 @@ export async function create(data: {
   description?: string | null;
   isDone: boolean;
   dueTo: number | null;
-  listId: number | null;
-  priority?: number;
+  listId: number;
+  priority: number;
 }) {
   const [task] =
     await sql`INSERT INTO task (title, description, "isDone", "dueTo", "listId", "priority") 
@@ -51,7 +51,7 @@ export async function create(data: {
                                 ${data.isDone}, 
                                 ${data.dueTo ?? null}, 
                                 ${data.listId}, 
-                                ${data.priority ?? null}) RETURNING *`;
+                                ${data.priority}) RETURNING *`;
   return task;
 }
 
@@ -72,15 +72,15 @@ export async function update(
     description: string | null;
     isDone: boolean;
     dueTo: number | null;
+    priority: number;
   },
-  priority: number,
 ) {
   const [task] = await sql`UPDATE task 
                                 SET title = ${data.title}, 
                                 description = ${data.description ?? null}, 
                                 "isDone" = ${data.isDone}, 
                                 "dueTo" = ${data.dueTo ?? null}, 
-                                "priority" = ${priority} 
+                                "priority" = ${data.priority}
                                 WHERE id = ${id} RETURNING *`;
   return task;
 }
