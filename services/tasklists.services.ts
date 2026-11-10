@@ -36,7 +36,8 @@ export async function getById(id: Number) {
  * @returns Promise<Any>
  */
 export async function create(data: { name: string; description?: string | null; userId: number }) {
-    const [tasklist] = await sql`INSERT INTO list (name, description, "userId") VALUES (${data.name}, ${data.description ?? null}, ${data.userId}) RETURNING *`;
+    const [tasklist] = await sql`INSERT INTO list (name, description, "userId") 
+                                    VALUES (${data.name}, ${data.description ?? null}, ${data.userId}) RETURNING *`;
     return tasklist;
 }
 
@@ -51,7 +52,10 @@ export async function create(data: { name: string; description?: string | null; 
  * @returns Promise<Any>
  */
 export async function update(id: number, data: { name: string; description?: string | null }) {
-    const [tasklist] = await sql`UPDATE list SET name = ${data.name}, description = ${data.description ?? null} WHERE id = ${id} RETURNING *`;
+    const [tasklist] = await sql`UPDATE list 
+                                    SET name = ${data.name}, 
+                                    description = ${data.description ?? null} 
+                                    WHERE id = ${id} RETURNING *`;
     return tasklist;
 }
 
@@ -65,6 +69,7 @@ export async function update(id: number, data: { name: string; description?: str
  * @returns Promise<Any>
  */
 export async function remove(id: number) {
-    const [tasklist] = await sql`DELETE FROM list WHERE id = ${id} RETURNING *`;
+    const [tasklist] = await sql`DELETE FROM list 
+                                    WHERE id = ${id} RETURNING *`;
     return tasklist;
 }

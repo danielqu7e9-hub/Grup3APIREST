@@ -37,7 +37,13 @@ export async function getById(id: number) {
  * @returns Promise<Any>
  */
 export async function create(data: { title: string; description?: string | null; isDone: boolean; dueTo: number | null; listId: number | null; priority?: number}) {
-    const [task] = await sql`INSERT INTO task (title, description, "isDone", "dueTo", "listId", "priority") VALUES (${data.title}, ${data.description ?? null}, ${data.isDone}, ${data.dueTo ?? null}, ${data.listId}, ${data.priority ?? null}) RETURNING *`;
+    const [task] = await sql`INSERT INTO task (title, description, "isDone", "dueTo", "listId", "priority") 
+                                VALUES (${data.title}, 
+                                ${data.description ?? null}, 
+                                ${data.isDone}, 
+                                ${data.dueTo ?? null}, 
+                                ${data.listId}, 
+                                ${data.priority ?? null}) RETURNING *`;
     return task;
 }
 
@@ -78,6 +84,7 @@ export async function update(id: number,
  * @returns Promise<Any>
  */
 export async function remove(id: number) {
-    const [task] = await sql`DELETE FROM task WHERE id = ${id} RETURNING *`;
+    const [task] = await sql`DELETE FROM task 
+                                WHERE id = ${id} RETURNING *`;
     return task;
 }
