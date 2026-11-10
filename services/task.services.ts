@@ -36,8 +36,8 @@ export async function getById(id: number) {
  * @param data Object
  * @returns Promise<Any>
  */
-export async function create(data: { title: string; description?: string | null; isDone: boolean; dueTo: number | null; listId: number }) {
-    const [task] = await sql`INSERT INTO task (title, description, "isDone", "dueTo", "listId") VALUES (${data.title}, ${data.description ?? null}, ${data.isDone}, ${data.dueTo ?? null}, ${data.listId}) RETURNING *`;
+export async function create(data: { title: string; description?: string | null; isDone: boolean; dueTo: number | null; listId: number | null; priority?: number}) {
+    const [task] = await sql`INSERT INTO task (title, description, "isDone", "dueTo", "listId", "priority") VALUES (${data.title}, ${data.description ?? null}, ${data.isDone}, ${data.dueTo ?? null}, ${data.listId}, ${data.priority ?? null}) RETURNING *`;
     return task;
 }
 
@@ -51,8 +51,20 @@ export async function create(data: { title: string; description?: string | null;
  * @param data Object
  * @returns Promise<Any>
  */
-export async function update(id: number, data: { title: string; description: string | null; isDone: boolean; dueTo: number | null }) {
-    const [task] = await sql`UPDATE task SET title = ${data.title}, description = ${data.description ?? null}, "isDone" = ${data.isDone}, "dueTo" = ${data.dueTo ?? null} WHERE id = ${id} RETURNING *`;
+export async function update(id: number, 
+                                data: { 
+                                    title: string; 
+                                    description: string | null; 
+                                    isDone: boolean; 
+                                    dueTo: number | null 
+                                }, priority: number) {
+    const [task] = await sql`UPDATE task 
+                                SET title = ${data.title}, 
+                                description = ${data.description ?? null}, 
+                                "isDone" = ${data.isDone}, 
+                                "dueTo" = ${data.dueTo ?? null}, 
+                                "priority" = ${priority   } 
+                                WHERE id = ${id} RETURNING *`;
     return task;
 }
 

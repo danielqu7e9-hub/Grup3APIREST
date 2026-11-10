@@ -83,8 +83,14 @@ export async function update(req: Request, res: Response) {
             return res.status(400).json({ error: "Wrong body type" });
         }
 
+        // Look if the priority is valid
+        const priority = Number(req.query.priority);
+        if (!(Number.isInteger(priority) && priority >= 1 && priority <= 5)) {
+            return res.status(400).json({ error: "Invalid priority value" });
+        }
+
         // Look if it exists
-        const task = await taskServices.update(id, data);
+        const task = await taskServices.update(id, data, priority);
         if (!task) {
             return res.status(404).json({ error: "Task with this ID doesn't exist" });
         }
