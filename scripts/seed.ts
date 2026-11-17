@@ -74,7 +74,7 @@ async function seed() {
     await sql.begin(async (tx) => {
         for (const u of data) {
             const [user] = await tx`INSERT INTO users (username, password)
-                                    VALUES (${u.username}, ${u.password}) RETURNING id`;
+                                    VALUES (${u.username}, ${await Bun.password.hash(u.password)}) RETURNING id`;
 
             for (const l of u.lists) {
                 const [list] = await tx`INSERT INTO list (name, description, "userId")

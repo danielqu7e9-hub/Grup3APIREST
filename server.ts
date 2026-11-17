@@ -1,6 +1,8 @@
 import express, { type Request, type Response, type NextFunction } from "express"
 import tasklists from "./routes/tasklists.routes";
 import task from "./routes/task.routes";
+import auth from "./routes/auth.routes";
+import { requireAuth } from "./middlewares/auth.middleware";
 
 const app = express();
 const PORT = 15955;
@@ -18,11 +20,14 @@ app.get('/status', (req, res) => {
     res.json({status: "alive" });
 });
 
+// Router auth
+app.use('/auth', auth);
+
 // Router the tasklists
-app.use('/tasklists', tasklists);
+app.use('/tasklists', requireAuth, tasklists);
 
 // Router task
-app.use('/task', task);
+app.use('/task', requireAuth, task);
 
 // MIDDLEWARE Log errors
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

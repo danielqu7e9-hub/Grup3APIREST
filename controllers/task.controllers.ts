@@ -11,7 +11,7 @@ export async function getAll(req: Request, res: Response) {
             return res.status(400).json({ error: "Wrong ID type" });
         }
 
-        const tasks = await taskServices.getAll(listId);
+        const tasks = await taskServices.getAll(listId, res.locals.userId);
 
         res.status(200).json(tasks);
 
@@ -31,7 +31,7 @@ export async function getById(req: Request, res: Response) {
         }
 
         // Look if it exists
-        const task = await taskServices.getById(id);
+        const task = await taskServices.getById(id, res.locals.userId);
         if (!task) {
             return res.status(404).json({ error: "Task with this ID doesn't exist" });
         }
@@ -55,7 +55,10 @@ export async function create(req: Request, res: Response) {
         }
 
         // Create it
-        const task = await taskServices.create(data);
+        const task = await taskServices.create(res.locals.userId, data);
+        if (!task) {
+            return res.status(404).json({ error: "Tasklist with this ID doesn't exist" });
+        }
 
         // Return
         return res.status(201).json(task);
@@ -82,7 +85,7 @@ export async function update(req: Request, res: Response) {
         }
 
         // Look if it exists
-        const task = await taskServices.update(id, data);
+        const task = await taskServices.update(id, res.locals.userId, data);
         if (!task) {
             return res.status(404).json({ error: "Task with this ID doesn't exist" });
         }
@@ -106,7 +109,7 @@ export async function remove(req: Request, res: Response) {
         }
 
         // Look if it exists
-        const task = await taskServices.remove(id);
+        const task = await taskServices.remove(id, res.locals.userId);
         if (!task) {
             return res.status(404).json({ error: "Task with this ID doesn't exist" });
         }

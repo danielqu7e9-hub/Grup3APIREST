@@ -5,7 +5,7 @@ import { parseId, parseListCreateBody, parseListUpdateBody } from "../utils/pars
 // GET /tasklists
 export async function getAll(req: Request, res: Response) {
     try {
-        const tasklists = await tasklistsServices.getAll();
+        const tasklists = await tasklistsServices.getAll(res.locals.userId);
 
         res.status(200).json(tasklists);
 
@@ -25,7 +25,7 @@ export async function getById(req: Request, res: Response) {
         }
 
         // Look if it exists
-        const tasklist = await tasklistsServices.getById(id);
+        const tasklist = await tasklistsServices.getById(id, res.locals.userId);
         if (!tasklist) {
             return res.status(404).json({ error: "Tasklist with this ID doesn't exist" });
         }
@@ -49,7 +49,7 @@ export async function create(req: Request, res: Response) {
         }
 
         // Create it
-        const tasklist = await tasklistsServices.create(data);
+        const tasklist = await tasklistsServices.create({ ...data, userId: res.locals.userId });
 
         // Return
         res.status(201).json(tasklist);
@@ -76,7 +76,7 @@ export async function update(req: Request, res: Response) {
         }
 
         // Look if it exists
-        const tasklist = await tasklistsServices.update(id, data);
+        const tasklist = await tasklistsServices.update(id, res.locals.userId, data);
         if (!tasklist) {
             return res.status(404).json({ error: "Tasklist with this ID doesn't exist" });
         }
@@ -100,7 +100,7 @@ export async function remove(req: Request, res: Response) {
         }
 
         // Look if it exists
-        const tasklist = await tasklistsServices.remove(id);
+        const tasklist = await tasklistsServices.remove(id, res.locals.userId);
         if (!tasklist) {
             return res.status(404).json({ error: "Tasklist with this ID doesn't exist" });
         }

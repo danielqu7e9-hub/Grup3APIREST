@@ -58,11 +58,11 @@ function parsePriority(value: unknown): number | null {
  * @param value Unknown
  * @returns Object or Null
  */
-export function parseListCreateBody(value: unknown): { name: string; description: string | null; userId: number } | null {
+export function parseListCreateBody(value: unknown): { name: string; description: string | null } | null {
     if (typeof value !== "object" || value === null) return null;
 
     const body = value as Record<string, unknown>;
-    const { name, description, userId } = body;
+    const { name, description } = body;
 
     if (typeof name !== "string") return null;
 
@@ -77,10 +77,7 @@ export function parseListCreateBody(value: unknown): { name: string; description
         return null;
     }
 
-    const parsedUserId = parsePositiveId(userId);
-    if (parsedUserId === null) return null;
-
-    return { name: trimmedName, description: parsedDescription, userId: parsedUserId };
+    return { name: trimmedName, description: parsedDescription };
 }
 
 /**
@@ -213,4 +210,28 @@ export function parseTaskUpdateBody(value: unknown): { title: string; descriptio
     if (parsedPriority === null) return null;
 
     return { title: trimmedTitle, description: parsedDescription, isDone, dueTo: parsedDueTo, priority: parsedPriority };
+}
+
+/**
+ * parseAuthBody()
+ * This function validates the request body of a register or login, if the body is not valid it returns a null.
+ *
+ * @author Daniel Qu
+ * @since 17/11/2026
+ * @param value Unknown
+ * @returns Object or Null
+ */
+export function parseAuthBody(value: unknown): { username: string; password: string } | null {
+    if (typeof value !== "object" || value === null) return null;
+
+    const body = value as Record<string, unknown>;
+    const { username, password } = body;
+
+    if (typeof username !== "string" || typeof password !== "string") return null;
+
+    const trimmedUsername = username.trim();
+    if (trimmedUsername.length === 0 || trimmedUsername.length > 255) return null;
+    if (password.length === 0 || password.length > 255) return null;
+
+    return { username: trimmedUsername, password };
 }
