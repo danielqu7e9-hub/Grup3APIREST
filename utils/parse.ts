@@ -1,3 +1,5 @@
+import type { Permissions } from "../services/share.services";
+
 /**
  * parseId()
  * This function validates if the value is an positive Integer, if its not it returns a null.
@@ -234,4 +236,60 @@ export function parseAuthBody(value: unknown): { username: string; password: str
     if (password.length === 0 || password.length > 255) return null;
 
     return { username: trimmedUsername, password };
+}
+
+/**
+ * parsePermissions()
+ * This function validates the permissions of a shared user, if they are not valid it returns a null.
+ *
+ * @author Yu Zhang
+ * @since 24/11/2026
+ * @param value Unknown
+ * @returns Object or Null
+ */
+function parsePermissions(value: unknown): Permissions | null {
+    if (typeof value !== "object" || value === null) return null;
+
+    const { edit, create, delete: remove } = value as Record<string, unknown>;
+
+    if (typeof edit !== "boolean" || typeof create !== "boolean" || typeof remove !== "boolean") return null;
+
+    return { edit, create, delete: remove };
+}
+
+/**
+ * parseShareBody()
+ * This function validates the request body with the permissions to share a tasklist, if the body is not valid it returns a null.
+ *
+ * @author Yu Zhang
+ * @since 24/11/2026
+ * @param value Unknown
+ * @returns Object or Null
+ */
+export function parseShareBody(value: unknown): { permissions: Permissions } | null {
+    if (typeof value !== "object" || value === null) return null;
+
+    const parsedPermissions = parsePermissions((value as Record<string, unknown>).permissions);
+    if (parsedPermissions === null) return null;
+
+    return { permissions: parsedPermissions };
+}
+
+/**
+ * parseJoinBody()
+ * This function validates the request body to join a tasklist with a code, if the body is not valid it returns a null.
+ *
+ * @author Yu Zhang
+ * @since 24/11/2026
+ * @param value Unknown
+ * @returns Object or Null
+ */
+export function parseJoinBody(value: unknown): { code: string } | null {
+    if (typeof value !== "object" || value === null) return null;
+
+    const { code } = value as Record<string, unknown>;
+    if (typeof code !== "string") return null;
+
+    const parsedCode = code.trim().toUpperCase();
+    return /^[A-Z2-9]{8}$/.test(parsedCode) ? { code: parsedCode } : null;
 }

@@ -78,6 +78,9 @@ export async function update(req: Request, res: Response) {
         // Look if it exists
         const tasklist = await tasklistsServices.update(id, res.locals.userId, data);
         if (!tasklist) {
+            if (await tasklistsServices.getById(id, res.locals.userId)) {
+                return res.status(403).json({ error: "Only the owner can edit this tasklist" });
+            }
             return res.status(404).json({ error: "Tasklist with this ID doesn't exist" });
         }
 
@@ -102,6 +105,9 @@ export async function remove(req: Request, res: Response) {
         // Look if it exists
         const tasklist = await tasklistsServices.remove(id, res.locals.userId);
         if (!tasklist) {
+            if (await tasklistsServices.getById(id, res.locals.userId)) {
+                return res.status(403).json({ error: "Only the owner can delete this tasklist" });
+            }
             return res.status(404).json({ error: "Tasklist with this ID doesn't exist" });
         }
 
